@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>직장생활 방탈출 | SMAT A모듈</title>
+<style>
+:root{--purple:#6754c8;--purple2:#eeeaff;--ink:#24233a;--muted:#737286;--bg:#f6f5fb;--green:#16845b;--red:#c33b4b;--line:#e5e2f0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;line-height:1.55}
+button,input{font:inherit}
+button{cursor:pointer}
+header{background:linear-gradient(135deg,#4f3da8,#8272e5);color:white;padding:28px 18px 24px}
+.header-inner{max-width:760px;margin:auto}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;opacity:.85;font-weight:800}
+h1{font-size:clamp(1.7rem,5vw,2.5rem);line-height:1.2;margin:8px 0 10px}
+header p{margin:0;opacity:.92}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 40px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat,.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:15px}
+.stat strong{display:block;font-size:1.2rem}
+.progress{height:8px;background:#e9e6f6;border-radius:999px;overflow:hidden;margin-top:9px}
+.progress div{height:100%;width:0;background:var(--purple);transition:width .25s}
+.panel{box-shadow:0 5px 20px #33256a0a}
+.kicker{color:var(--purple);font-size:.8rem;font-weight:800;letter-spacing:.04em}
+h2{font-size:1.35rem;line-height:1.3;margin:6px 0 10px}
+h3{font-size:1.05rem;margin:0 0 8px}
+p{margin:8px 0}
+.muted{color:var(--muted);font-size:.92rem}
+.options{display:grid;gap:9px;margin:18px 0}
+.option{display:flex;gap:10px;align-items:flex-start;text-align:left;background:white;border:1.5px solid var(--line);padding:13px 14px;border-radius:13px;color:var(--ink);width:100%;transition:.15s}
+.option:hover{border-color:#9d91e9}
+.option .letter{display:inline-grid;place-items:center;flex:0 0 28px;height:28px;border-radius:50%;background:#f0edff;color:var(--purple);font-weight:800}
+.option.selected{border-color:var(--purple);background:var(--purple2)}
+.primary,.secondary,.danger{border:0;border-radius:12px;padding:12px 16px;font-weight:800}
+.primary{background:var(--purple);color:white;width:100%}
+.primary:disabled{opacity:.4;cursor:not-allowed}
+.secondary{background:#efedf8;color:var(--purple)}
+.danger{background:#fff0f1;color:var(--red)}
+.feedback{padding:12px 13px;border-radius:12px;margin:12px 0;font-weight:650}
+.feedback.good{background:#e8f7ef;color:#116644}
+.feedback.bad{background:#fff0f1;color:#a52d3b}
+.hidden{display:none!important}
+.mission-hero{background:linear-gradient(135deg,#f0edff,#fff);border:1px solid #ded8ff;border-radius:16px;padding:16px;margin:15px 0}
+.steps{padding-left:22px}
+.steps li{margin:8px 0}
+.checkline{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.checkline input{margin-top:5px;width:18px;height:18px;accent-color:var(--purple)}
+.note{font-size:.85rem;color:var(--muted)}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.pill{border-radius:999px;background:#f0edff;color:var(--purple);font-size:.78rem;font-weight:800;padding:5px 10px}
+.footer-actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:16px}
+.camera-preview{width:100%;max-height:330px;object-fit:contain;border-radius:14px;background:#f0eef7;margin-top:12px}
+input[type=file]{width:100%;padding:12px;background:#faf9ff;border:1px dashed #c8c1e8;border-radius:12px}
+.certificate{background:linear-gradient(135deg,#4f3da8,#8b7be9);color:white;text-align:center;border-radius:20px;padding:24px 16px}
+.big-emoji{font-size:3rem}
+.smallprint{font-size:.8rem;color:var(--muted);text-align:center;margin-top:20px}
+@media(min-width:600px){.footer-actions{grid-template-columns:1fr 1fr}.wrap{padding-top:24px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">TEAM ESCAPE CHALLENGE · SMAT A MODULE</div>
+    <h1>직장생활 방탈출</h1>
+    <p>예비 신입사원 여러분, 30문제와 7개의 추리 관문, 5개의 실전 미션을 해결하고 입사 승인 코드를 획득하세요!</p>
+  </div>
+</header>
+<main class="wrap">
+  <div class="stats">
+    <div class="stat"><span class="muted">진행 상황</span><strong id="progressText">0 / 30 문제</strong><div class="progress"><div id="progressBar"></div></div></div>
+    <div class="stat"><span class="muted">팀 점수</span><strong><span id="score">0</span>점</strong><span class="note">정답 1개당 10점</span></div>
+  </div>
+
+  <section id="intro" class="panel">
+    <div class="kicker">MISSION BRIEFING</div>
+    <h2>사라진 입사 승인 코드를 찾아라!</h2>
+    <p>회사 입사를 위한 최종 승인 코드가 잠겼습니다. 다섯 가지 업무 구역에서 문제를 풀고, 팀 미션까지 성공해야 탈출할 수 있습니다.</p>
+    <ol class="steps">
+      <li>총 30문제를 팀원과 함께 해결하세요.</li>
+      <li>각 구역의 6문제를 푼 뒤 추리 관문을 모두 해결하고 조별 행동 미션을 수행하세요.</li>
+      <li>마지막에는 팀원 모두가 함께 포즈를 취하고 기념사진을 촬영하세요.</li>
+    </ol>
+    <p class="muted">준비물: 휴대전화만 있으면 됩니다. 미션은 담당 선생님의 확인을 받고 완료하세요.</p>
+    <button class="primary" onclick="startGame()">방탈출 시작하기</button>
+  </section>
+
+  <section id="quiz" class="panel hidden" aria-live="polite">
+    <div class="topline"><span id="partPill" class="pill"></span><span id="questionNo" class="muted"></span></div>
+    <div class="kicker" id="skill"></div>
+    <h2 id="question"></h2>
+    <div id="options" class="options"></div>
+    <div id="feedback" class="feedback hidden"></div>
+    <button id="checkBtn" class="primary" onclick="checkAnswer()" disabled>정답 확인</button>
+    <button id="nextBtn" class="primary hidden" onclick="nextQuestion()">다음 단계로</button>
+  </section>
+
+  <section id="riddle" class="panel hidden" aria-live="polite">
+    <div class="kicker">BOSS RIDDLE · TEAM LOGIC</div>
+    <div class="topline"><span id="riddlePart" class="pill"></span><span class="muted">행동 미션 잠금 해제</span></div>
+    <h2 id="riddleTitle"></h2>
+    <p id="riddlePrompt"></p>
+    <label for="riddleAnswer"><strong>정답을 직접 입력하세요</strong></label>
+    <input id="riddleAnswer" type="text" autocomplete="off" style="width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;margin:10px 0 14px">
+    <p class="note">답을 직접 입력해야 다음 단계로 이동할 수 있습니다.</p>
+    <div id="riddleFeedback" class="feedback hidden"></div>
+    <button id="riddleCheckBtn" class="primary" onclick="checkRiddle()">정답 확인</button>
+    <button id="riddleNextBtn" class="primary hidden" onclick="openRiddleMission()">정답 확인 · 행동 미션 열기</button>
+  </section>
+
+  <section id="mission" class="panel hidden" aria-live="polite">
+    <div class="kicker">TEAM CHALLENGE UNLOCKED</div>
+    <div class="topline"><h2 id="missionTitle"></h2><span id="missionPill" class="pill"></span></div>
+    <div class="mission-hero"><h3 id="missionName"></h3><p id="missionSummary"></p></div>
+    <h3>수행 체크리스트</h3>
+    <div id="missionChecks"></div>
+    <p class="note">모든 항목을 수행한 뒤 담당 선생님에게 확인을 받고, 선생님이 알려주는 승인 코드를 입력해야 다음 구역으로 이동할 수 있습니다.</p>
+    <div id="missionFeedback" class="feedback hidden"></div>
+    <div id="missionCodeArea" class="hidden">
+      <label for="missionCode"><strong>담당 선생님 승인 코드</strong></label>
+      <input id="missionCode" type="password" inputmode="numeric" autocomplete="off" placeholder="승인 코드 입력" style="width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;margin:10px 0 14px">
+    </div>
+    <button id="missionDoneBtn" class="primary" onclick="completeMission()" disabled>미션 수행 확인</button>
+  </section>
+
+  <section id="finale" class="panel hidden" aria-live="polite">
+    <div class="certificate">
+      <div class="big-emoji">🏆</div>
+      <div class="eyebrow">ESCAPE SUCCESS</div>
+      <h2>축하합니다! 방탈출 성공!</h2>
+      <p>여러분은 비즈니스 매너와 커뮤니케이션 미션을 모두 통과했습니다.</p>
+    </div>
+    <h2 style="margin-top:22px">마지막 미션: 우리 팀의 합격 포즈!</h2>
+    <p>조원 전원이 함께 창의적인 합격 포즈를 취하고 기념사진을 촬영하세요. 엄지척, 승리 포즈, 면접 합격 세리머니 등 팀만의 포즈를 만들어 보세요.</p>
+    <div class="mission-hero">
+      <ol class="steps">
+        <li>조원 모두가 사진에 나오도록 모입니다.</li>
+        <li>팀 이름을 외치며 모두 함께 포즈를 취합니다.</li>
+        <li>담당 선생님 또는 조원의 휴대전화로 사진을 촬영합니다.</li>
+        <li>사진 촬영까지 마치면 최종 미션 완료입니다!</li>
+      </ol>
+    </div>
+    <label for="photo"><strong>선택 사항: 기념사진 미리보기</strong></label>
+    <p class="note">사진은 이 페이지 안에서 미리보기만 됩니다. 별도 서버로 업로드되지 않습니다.</p>
+    <input id="photo" type="file" accept="image/*" capture="environment" onchange="previewPhoto(event)">
+    <img id="photoPreview" class="camera-preview hidden" alt="팀 기념사진 미리보기">
+    <div class="footer-actions">
+      <button class="primary" onclick="finishGame()">사진 촬영 완료! 최종 미션 통과</button>
+      <button class="secondary" onclick="window.print()">결과 화면 인쇄하기</button>
+    </div>
+    <div id="finishMsg" class="feedback good hidden">🎉 모든 미션을 완료했습니다! 팀원들과 서로 수고했다고 인사하고 마무리하세요.</div>
+  </section>
+  <p class="smallprint">교육용 방탈출 · SMAT A모듈 주제 기반 창작 문항</p>
+</main>
+<script>
+const questions = [
+{part:0,skill:"비즈니스 매너 및 에티켓",q:"첫 출근 날 복도에서 팀장님과 마주쳤다. 가장 적절한 행동은?",opts:["팀장님이 먼저 인사할 때까지 기다린다.","밝은 표정으로 눈을 맞추고 정중하게 인사한다.","고개만 살짝 돌리고 지나간다.","친한 친구처럼 큰 소리로 인사한다."],a:1,why:"먼저 밝고 정중하게 인사하는 것이 기본적인 비즈니스 매너입니다."},
+{part:0,skill:"비즈니스 매너 및 에티켓",q:"거래처 담당자와 처음 만나 악수할 때 가장 적절한 행동은?",opts:["상대의 손을 최대한 세게 잡는다.","휴대전화를 보면서 악수한다.","자연스럽게 눈을 맞추고 적절한 힘으로 악수한다.","상대가 원하지 않아도 악수를 강요한다."],a:2,why:"시선과 적절한 악수, 인사말을 통해 존중을 표현합니다."},
+{part:0,skill:"비즈니스 매너 및 에티켓",q:"거래처 담당자에게 명함을 받았다. 가장 적절한 행동은?",opts:["명함을 받자마자 뒷주머니에 구겨 넣는다.","명함을 확인하고 이름과 직책을 살펴본 뒤 소중히 보관한다.","명함을 받은 즉시 책상 아래에 내려놓는다.","상대방 앞에서 명함을 장난스럽게 접는다."],a:1,why:"명함의 이름과 직책을 확인하고 소중히 다룹니다."},
+{part:0,skill:"비즈니스 매너 및 에티켓",q:"다른 부서를 방문해 담당자와 이야기하고 싶다. 가장 적절한 행동은?",opts:["노크 없이 들어가서 담당자를 찾는다.","다른 직원의 컴퓨터 화면을 보며 기다린다.","노크하고 방문 목적을 밝힌 뒤 허락을 받고 들어간다.","담당자가 없으면 책상 위 자료를 살펴본다."],a:2,why:"방문 전 노크하고 목적을 밝히며 상대의 업무 공간을 존중합니다."},
+{part:0,skill:"비즈니스 매너 및 에티켓",q:"외부 고객에게 우리 회사의 신입사원을 소개하려 한다. 가장 적절한 방법은?",opts:["소개받는 사람보다 소개하는 사람의 편의만 고려한다.","외부 고객을 배려해 신입사원을 소개하고 이름과 역할을 명확히 전달한다.","직급이 낮은 사람은 소개하지 않는다.","이름 대신 별명으로 소개한다."],a:1,why:"상대가 누구인지 명확히 알 수 있도록 정중하게 소개합니다."},
+{part:0,skill:"비즈니스 매너 및 에티켓",q:"중요한 회의 중 개인 휴대전화에 메시지가 도착했다. 가장 적절한 행동은?",opts:["바로 큰 소리로 통화한다.","메시지를 확인하며 계속 대화한다.","휴대전화를 무음으로 하고 긴급한 용건이 아니라면 회의 후 확인한다.","설명 없이 자리를 비운다."],a:2,why:"회의에 집중하고 다른 참석자를 배려합니다."},
+{part:1,skill:"이미지 메이킹",q:"면접관을 처음 만나는 순간, 좋은 인상을 형성하는 데 가장 적절한 행동은?",opts:["지나치게 과장된 몸짓을 사용한다.","단정한 복장과 자연스러운 표정, 바른 자세를 유지한다.","상대방을 계속 노려본다.","팔짱을 끼고 깊이 기대앉는다."],a:1,why:"단정한 복장과 자연스러운 표정, 자세가 긍정적인 인상에 도움이 됩니다."},
+{part:1,skill:"이미지 메이킹",q:"고객을 직접 만나는 날, 가장 적절한 복장 선택은?",opts:["회사 분위기와 업무 특성에 맞게 단정하게 입는다.","유행하는 옷이라면 상황과 관계없이 입는다.","화려한 액세서리를 최대한 많이 착용한다.","복장은 업무와 관계없으므로 아무렇게나 입는다."],a:0,why:"상황과 업무에 어울리는 단정한 복장을 선택합니다."},
+{part:1,skill:"이미지 메이킹",q:"고객이 이야기하는 동안 어떤 행동이 가장 적절한가?",opts:["계속 시계를 확인한다.","적절하게 눈을 맞추고 고개를 끄덕이며 경청한다.","다른 곳을 보며 하품한다.","상대방의 말을 자주 끊는다."],a:1,why:"시선과 고개 끄덕임은 관심과 경청을 전달할 수 있습니다."},
+{part:1,skill:"이미지 메이킹",q:"고객이 문의하러 왔지만 직원은 무표정하게 모니터만 바라보고 있다. 가장 적절한 개선 방법은?",opts:["고객이 먼저 말을 걸 때까지 무시한다.","질문을 듣지 않고 안내문만 가리킨다.","고객을 바라보며 자연스러운 표정과 친절한 인사로 응대한다.","모든 고객에게 지나치게 큰 웃음을 보인다."],a:2,why:"자연스러운 표정과 인사는 고객을 환영한다는 신호가 됩니다."},
+{part:1,skill:"이미지 메이킹",q:"바람직한 이미지 메이킹에 대한 설명은?",opts:["외모만 좋으면 직장 내 신뢰를 얻을 수 있다.","유행을 무조건 따라야 한다.","외적 표현뿐 아니라 태도, 말투, 행동의 일관성도 중요하다.","고객을 만날 때만 예절을 지키면 된다."],a:2,why:"이미지는 외모뿐 아니라 태도와 행동이 함께 만들어 갑니다."},
+{part:1,skill:"이미지 메이킹",q:"팀원이 발표할 때 몸을 흔들고 시선을 바닥으로 향한다. 가장 적절한 피드백은?",opts:["발표를 못하니까 하지 마.","자신감이 없어 보이니 무조건 크게 말해.","발을 안정적으로 두고 청중을 번갈아 바라보면 전달력이 좋아질 거야.","아무 말도 하지 않고 발표를 중단시킨다."],a:2,why:"구체적이고 실행 가능한 피드백은 개선에 도움이 됩니다."},
+{part:2,skill:"고객심리의 이해",q:"고객이 “왜 이렇게 오래 기다려야 하죠?”라고 불만을 표현했다. 말에 담긴 욕구를 가장 적절하게 해석한 것은?",opts:["직원과 다투고 싶어 한다.","자신의 시간을 존중받고 신속한 안내를 받고 싶어 한다.","서비스를 무조건 무료로 받고 싶어 한다.","회사를 떠나고 싶어 한다."],a:1,why:"고객은 기다림에 대한 설명과 신속한 응대를 원할 수 있습니다."},
+{part:2,skill:"고객심리의 이해",q:"고객이 평소보다 빠른 말투로 불만을 이야기한다. 가장 먼저 해야 할 행동은?",opts:["말을 끊고 해결 방법부터 설명한다.","고객도 잘못했을 것이라고 판단한다.","말투와 표정 등 감정 신호를 살피며 차분히 경청한다.","감정을 무시하고 규정만 반복한다."],a:2,why:"감정과 상황을 파악하기 위해 먼저 차분히 경청합니다."},
+{part:2,skill:"고객심리의 이해",q:"고객이 주문한 상품과 다른 상품을 받았다며 화를 내고 있다. 가장 적절한 대응은?",opts:["주문을 잘못하신 것 같다고 말한다.","다른 고객들도 그냥 사용한다고 말한다.","불편에 공감하고 주문 내역을 확인한 뒤 해결책을 안내한다.","담당자가 아니라며 대화를 종료한다."],a:2,why:"공감과 사실 확인을 바탕으로 해결책을 안내합니다."},
+{part:2,skill:"고객심리의 이해",q:"고객이 여러 조건을 꼼꼼하게 비교하며 질문한다. 가장 적절한 응대 방법은?",opts:["질문이 많다며 대충 답변한다.","확인 가능한 정보를 구체적으로 설명하고 비교하도록 돕는다.","무조건 가장 비싼 상품을 추천한다.","다른 고객을 먼저 응대한다며 떠난다."],a:1,why:"고객의 의사결정에 도움이 되는 정확한 정보를 제공합니다."},
+{part:2,skill:"고객심리의 이해",q:"고객의 기대보다 실제 서비스 경험이 훨씬 좋았다. 고객 만족에 대한 설명으로 적절한 것은?",opts:["고객의 기대와 실제 경험은 만족에 영향을 줄 수 있다.","서비스 품질과 관계없이 가격이 비싸면 만족한다.","고객 만족은 직원의 친절과 전혀 관계가 없다.","모든 고객은 동일한 서비스를 원한다."],a:0,why:"고객 만족은 기대와 실제 경험의 차이 등 여러 요인에 영향을 받습니다."},
+{part:2,skill:"고객심리의 이해",q:"고객이 “다른 제품도 있나요?”라고 물었다. 가장 적절한 응대는?",opts:["없다고 말하고 대화를 끝낸다.","원하는 조건을 질문하고 적합한 대안을 안내한다.","고객이 고른 제품만 반복해서 추천한다.","직원이 가장 좋아하는 제품을 권한다."],a:1,why:"질문으로 고객의 필요를 파악한 뒤 적합한 대안을 제안합니다."},
+{part:3,skill:"고객 커뮤니케이션",q:"고객이 긴 설명을 하고 있다. 효과적인 경청 방법은?",opts:["말이 끝나기 전에 해결책을 제시한다.","고객의 말을 요약해 이해한 내용이 맞는지 확인한다.","말하는 동안 다른 업무를 처리한다.","자신의 경험만 길게 이야기한다."],a:1,why:"요약과 확인은 오해를 줄이는 적극적 경청 방법입니다."},
+{part:3,skill:"고객 커뮤니케이션",q:"고객이 “서비스가 불편했어요”라고 말했다. 불편의 원인을 구체적으로 파악하기 위한 개방형 질문은?",opts:["서비스 이용이 불편하셨나요?","오늘 처음 방문하셨나요?","어떤 과정에서 불편을 느끼셨는지 말씀해 주시겠어요?","직원의 안내가 불친절했나요?"],a:2,why:"개방형 질문은 상대가 자신의 경험과 생각을 자유롭게 설명하도록 합니다. 나머지는 예·아니요 등 제한된 답변을 유도하는 폐쇄형 질문입니다."},
+{part:3,skill:"고객 커뮤니케이션",q:"다음 전화 응대 절차를 올바른 순서로 배열한 것은? ① 용건을 듣고 확인 ② 회사명·이름을 밝히며 인사 ③ 안내하고 통화 마무리 ④ 필요한 사항 메모",opts:["① → ② → ③ → ④","② → ① → ④ → ③","④ → ③ → ② → ①","② → ④ → ③ → ①"],a:1,why:"먼저 인사하고 용건을 들은 뒤 필요한 내용을 메모해 안내하고 마무리합니다."},
+{part:3,skill:"고객 커뮤니케이션",q:"고객에게 “그건 저희가 해드릴 수 없어요”라고 말해야 한다. 가장 적절한 표현은?",opts:["안 된다고 말씀드렸잖아요.","그건 제 담당이 아닙니다.","죄송하지만 해당 방식은 어렵습니다. 대신 가능한 방법을 안내해 드리겠습니다.","규정이니 그냥 따르세요."],a:2,why:"제한 사항을 정중하게 알리고 가능한 대안을 함께 제시합니다."},
+{part:3,skill:"고객 커뮤니케이션",q:"거래처에 업무 이메일을 보내려고 한다. 가장 적절한 작성 방법은?",opts:["제목 없이 본문만 작성한다.","친구에게 보내듯 줄임말과 이모티콘을 사용한다.","목적이 드러나는 제목, 정중한 인사, 핵심 내용, 요청 및 마무리를 포함한다.","수신자를 확인하지 않고 전송한다."],a:2,why:"명확한 제목과 정중하고 구조화된 본문은 업무 전달을 돕습니다."},
+{part:3,skill:"고객 커뮤니케이션",q:"동료가 내 말을 무례하게 받아들여 화가 났다. 가장 적절한 해결 방법은?",opts:["다른 동료들에게 상대방의 잘못을 이야기한다.","상대방의 의도를 단정하고 대화를 거부한다.","서로의 입장을 확인하고 내 의도를 설명하며 오해를 풀도록 대화한다.","상대방이 먼저 사과할 때까지 업무를 중단한다."],a:2,why:"상대의 관점을 확인하고 자신의 의도를 차분히 설명합니다."},
+{part:4,skill:"회의 기획 및 의전 실무",q:"내일 오전 10시에 거래처와 회의가 예정되어 있다. 사전에 해야 할 일은?",opts:["참석자들이 알아서 준비하도록 아무것도 하지 않는다.","회의 목적과 안건을 정리하고 참석자, 장소, 자료 및 장비를 확인한다.","회의 당일 처음으로 일정을 알린다.","회의 자료는 회의가 끝난 후 준비한다."],a:1,why:"회의 목적과 준비 사항을 사전에 확인해야 원활하게 진행할 수 있습니다."},
+{part:4,skill:"회의 기획 및 의전 실무",q:"회의 시작 5분 전, 발표용 노트북이 작동하지 않는다. 가장 적절한 대응은?",opts:["회의가 취소될 때까지 기다린다.","장비 문제를 숨기고 그대로 진행한다.","대체 장비나 자료 공유 방법을 확인하고 참석자에게 필요한 사항을 안내한다.","담당자를 공개적으로 비난한다."],a:2,why:"문제를 확인하고 대안을 마련해 회의 차질을 줄입니다."},
+{part:4,skill:"회의 기획 및 의전 실무",q:"한 참석자가 계속 발언해 다른 참석자들이 의견을 내지 못하고 있다. 진행자의 적절한 행동은?",opts:["해당 참석자를 무시하고 회의를 끝낸다.","발언을 정중하게 정리하고 다른 참석자들에게도 의견을 요청한다.","가장 직급이 높은 참석자만 발언하게 한다.","모든 참석자의 발언을 금지한다."],a:1,why:"회의 진행자는 참여 기회를 균형 있게 조정해야 합니다."},
+{part:4,skill:"회의 기획 및 의전 실무",q:"외부 고객과 사내 담당자가 참석하는 공식 회의를 준비한다. 가장 적절한 행동은?",opts:["좌석을 무작위로 배치한다.","참석자의 역할과 직위, 회의 목적 및 장소의 좌석 배치 원칙을 고려한다.","외부 고객은 반드시 출입문에서 가장 먼 자리에 앉힌다.","참석자가 도착한 뒤에야 좌석을 정한다."],a:1,why:"회의 목적과 참석자, 장소의 의전 원칙을 고려해 좌석을 준비합니다."},
+{part:4,skill:"회의 기획 및 의전 실무",q:"회의록에 중요하게 기록해야 할 내용은?",opts:["참석자들의 개인적인 평가와 추측","회의 중 나온 모든 농담","주요 논의 내용, 결정 사항, 담당자, 실행 기한","발언자의 외모와 말투에 대한 평가"],a:2,why:"회의록은 논의 결과와 실행할 일, 담당자, 기한을 명확히 남겨야 합니다."},
+{part:4,skill:"회의 기획 및 의전 실무",q:"회의에서 신제품 홍보자료를 금요일까지 완성하기로 했다. 회의 후 가장 적절한 행동은?",opts:["회의가 끝났으므로 더 이상 확인하지 않는다.","담당자와 기한을 정리해 공유하고 진행 상황을 확인한다.","담당자가 기억할 것이라 생각하고 기록하지 않는다.","마감일이 지난 뒤에 진행 여부를 확인한다."],a:1,why:"결정 사항을 공유하고 실행 상황을 확인해야 회의 결과가 실제 업무로 이어집니다."}
+];
+
+const riddles = [
+{title:"추리 관문 1 · 왕의 초상화",prompt:"한 애꾸눈 왕은 유명한 화가에게 초상화를 그리게 했지만, 자신과 닮지 않았다며 화를 내고 화가를 쫓아냈습니다. 다른 화가들도 왕의 마음에 들지 못했습니다. 어느 날 한 스님이 초상화를 그리겠다고 했고, 완성된 그림을 본 왕은 만족했습니다. 스님은 왕을 어떤 모습으로 그렸을까요?",answers:["옆모습","옆으로그린모습","왕의옆모습"],why:"왕을 옆모습으로 그려 애꾸눈이 드러나지 않게 했습니다."},
+{title:"추리 관문 2 · 다섯 글자 영어 단어",prompt:"I am a word, 5 letters long. Strike my first letter, and I am still the same. Strike my middle letter, and I am yet still the same. What word am I?",answers:["empty"],why:"정답은 EMPTY입니다. 가운데 글자 P를 제거해도 EMTY가 원래 단어 EMPTY와 같은 발음으로 읽힌다는 언어유희입니다."},
+{title:"추리 관문 3 · 지식인의 암호",prompt:"쪽지에는 다음과 같이 적혀 있습니다. J → N → P → B → H. 각 알파벳 사이의 정중앙에 있는 알파벳들을 차례대로 조합하면 어떤 단어가 될까요?",answers:["love"],why:"정답은 LOVE입니다. 각 알파벳 쌍 사이의 정중앙에 있는 알파벳을 찾아 조합합니다."},
+{title:"추리 관문 4 · 영화관 실종 사건",prompt:"4D 영화가 상영 중인 극장에서 관람객 한 명이 실종되었습니다. 사건의 단서는 피해자가 남긴 인형뿐입니다. 같은 영화를 본 용의자는 네 명입니다. ① 김성남(남, 편의점 신입 아르바이트생): 피해자의 동네 아는 오빠로, 평소 피해자에 대한 자격지심이 심했습니다. ② 박수림(여, 어학원 스페인어 강사): 극장 내 매표소에서 피해자와 시비가 붙어 감정이 상했습니다. ③ 토마스 김(남, 성형외과 코디네이터): 피해자의 코 수술을 상담해 준 뒤 빈번한 A/S 요구로 스트레스를 받고 있었습니다. ④ 윤우철(남, 은행 외환딜러): 피해자의 출퇴근길을 훔쳐보는 등 평소 피해자를 끊임없이 관찰했습니다. 인형에는 ‘AR’이라는 빨간 글씨가 적혀 있습니다. DOLL + AR = DOLLAR라는 단서를 이용할 때 범인은 누구일까요? 이름을 입력하세요.",answers:["윤우철","4번윤우철","윤우철남","윤우철(남,은행외환딜러)"],why:"정답은 윤우철입니다. 인형(DOLL)과 AR을 합치면 DOLLAR가 됩니다. DOLLAR는 달러를 뜻하므로 은행 외환딜러인 윤우철을 가리킵니다."},
+{title:"추리 관문 5 · 세 사람의 진술",prompt:"회의실에서 중요한 문서가 사라졌습니다. 범인은 A, B, C 중 한 명이고, 세 사람의 진술 중 정확히 하나만 참입니다. A는 ‘B가 문서를 가져갔다’고 말합니다. B는 ‘나는 문서를 가져가지 않았다’고 말합니다. C는 ‘A가 문서를 가져가지 않았다’고 말합니다. 문서를 가져간 사람은 누구일까요?",answers:["a","a가져갔다","a가범인","a가문서를가져갔다"],why:"A가 가져갔다면 A의 진술은 거짓, B의 진술은 참, C의 진술은 거짓이므로 참은 정확히 하나입니다."},
+{title:"추리 관문 6 · 발표 순서",prompt:"다섯 명 A, B, C, D, E가 차례로 발표합니다. A는 B보다 먼저 발표합니다. C는 A 바로 다음에 발표합니다. D는 E보다 먼저 발표합니다. E는 B보다 나중에 발표합니다. B는 마지막 발표자가 아닙니다. 조건을 모두 만족하는 발표 순서를 입력하세요.",answers:["d-a-c-b-e","d,a,c,b,e","d a c b e"],why:"D-A-C-B-E는 모든 조건을 만족합니다. A 바로 뒤에 C가 오고, A는 B보다 앞서며, D는 E보다 앞섭니다. E는 B보다 뒤에 있고 B는 마지막이 아닙니다."},
+{title:"추리 관문 7 · 숫자 규칙",prompt:"숫자 배열의 규칙을 찾아 물음표에 들어갈 숫자를 입력하세요. 2, 6, 12, 20, 30, ?",answers:["42"],why:"각 숫자는 연속된 두 정수의 곱입니다: 1×2, 2×3, 3×4, 4×5, 5×6이므로 다음은 6×7 = 42입니다."}
+];
+const riddleGroups = [[0,1],[2],[3,4],[5],[6]];
+let activeRiddle=0, activeRiddleGroup=0, activeRiddleStage=0, riddleSelected=null, riddleAnswered=false;
+const missions = [
+{title:"미션 1 · 비즈니스 매너 및 에티켓",name:"첫인상 합격 프로젝트",summary:"조원 전원이 담당 선생님에게 찾아가 45도 정중례로 인사하세요.",checks:["조원 전원이 담당 선생님에게 함께 이동했다.","각자 바른 자세로 45도 정중례를 했다.","“안녕하십니까? 오늘 잘 부탁드립니다.”라고 정중하게 인사했다."]},
+{title:"미션 2 · 이미지 메이킹",name:"10초 만에 호감형 신입사원",summary:"모든 조원이 신입사원처럼 입장하고 자세·표정·자기소개를 보여주세요.",checks:["조원 전원이 차례로 바른 자세로 섰다.","자연스러운 미소와 적절한 시선으로 인사했다.","“안녕하십니까? 신입사원 ○○○입니다. 잘 부탁드립니다.”라고 자기소개했다."]},
+{title:"미션 3 · 고객심리의 이해",name:"화난 고객의 마음을 돌려라",summary:"한 명은 화난 고객, 한 명은 직원 역할을 맡아 불만 상황을 해결하세요.",checks:["고객의 감정에 공감하고 불편에 대해 사과했다.","상황을 파악하기 위한 확인 질문을 했다.","가능한 해결 대안을 정중하게 안내했다."]},
+{title:"미션 4 · 고객 커뮤니케이션",name:"말로 전달하고 정확히 확인하라",summary:"진행자가 한 번 읽어 준 업무 지시를 조원끼리 말로 전달하고 마지막 사람이 설명하세요.",checks:["첫 사람은 다음 지시를 들었다: “오늘 오후 3시까지 회의실에 4명이 모여 신제품 홍보 아이디어를 논의하고, 회의 결과를 팀장에게 보고하세요.”","조원들이 순서대로 말로만 내용을 전달했다.","마지막 조원이 시간·장소·인원·업무·보고 대상 5가지를 정확히 말했다."]},
+{title:"미션 5 · 회의 기획 및 의전 실무",name:"3분 안에 회의를 완성하라",summary:"학교 축제 홍보 행사를 주제로 짧은 회의를 하고 실행 계획을 발표하세요.",checks:["진행자·의견 제안자·시간 관리자·발표자 등 역할을 나눴다.","3분 안에 홍보 아이디어 한 가지를 결정했다.","누가 무엇을 언제까지 할지 정하고 30초 이내로 발표했다."]}
+];
+let index=0, score=0, selected=null, answered=false, completedMissions=new Set();
+const $=id=>document.getElementById(id);
+function show(id){["intro","quiz","riddle","mission","finale"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function startGame(){show("quiz");renderQuestion()}
+function renderQuestion(){
+ selected=null;answered=false;
+ const q=questions[index];
+ $("partPill").textContent=`파트 ${q.part+1} / 5`;
+ $("questionNo").textContent=`문제 ${index+1} / 30`;
+ $("skill").textContent=q.skill;
+ $("question").textContent=q.q;
+ $("options").innerHTML="";
+ q.opts.forEach((o,i)=>{const b=document.createElement("button");b.className="option";b.innerHTML=`<span class="letter">${String.fromCharCode(65+i)}</span><span>${escapeHTML(o)}</span>`;b.onclick=()=>{if(answered)return;selected=i;document.querySelectorAll(".option").forEach((el,j)=>el.classList.toggle("selected",j===i));$("checkBtn").disabled=false};$("options").appendChild(b)});
+ $("feedback").className="feedback hidden";$("feedback").textContent="";
+ $("checkBtn").classList.remove("hidden");$("checkBtn").disabled=true;$("nextBtn").classList.add("hidden");
+ updateProgress();
+}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function checkAnswer(){
+ if(selected===null||answered)return;
+ const q=questions[index], f=$("feedback");
+ if(selected===q.a){
+   answered=true;
+   document.querySelectorAll(".option").forEach(el=>el.disabled=true);
+   score+=10;
+   $("score").textContent=score;
+   f.className="feedback good";
+   f.textContent="정답입니다! "+q.why;
+   $("checkBtn").classList.add("hidden");
+   $("nextBtn").classList.remove("hidden");
+   $("nextBtn").textContent=((index+1)%6===0)?"조별 미션으로 이동":"다음 문제";
+ } else {
+   f.className="feedback bad";
+   f.textContent="아직 정답이 아닙니다. 정답을 확인하고 다시 선택해 보세요!";
+   document.querySelectorAll(".option").forEach(el=>el.disabled=false);
+   $("checkBtn").disabled=true;
+   $("checkBtn").classList.remove("hidden");
+   $("nextBtn").classList.add("hidden");
+ }
+ updateProgress();
+}
+function nextQuestion(){
+ if(!answered)return; // 정답을 맞힌 경우에만 다음 단계로 이동
+ index++;
+ if(index%6===0){showRiddle(index/6-1,0);return}
+ if(index>=questions.length){show("finale");return}
+ renderQuestion();
+}
+
+function showRiddle(groupIndex, stageIndex=0){
+ activeRiddleGroup=groupIndex; activeRiddleStage=stageIndex;
+ activeRiddle=riddleGroups[groupIndex][stageIndex]; riddleSelected=null; riddleAnswered=false;
+ const r=riddles[activeRiddle]; show("riddle");
+ $("riddlePart").textContent=`추리 관문 ${activeRiddle+1} / 7`;
+ $("riddleTitle").textContent=r.title; $("riddlePrompt").textContent=r.prompt;
+ $("riddleAnswer").value=""; $("riddleAnswer").disabled=false; $("riddleCheckBtn").dataset.attempts="0";
+ $("riddleFeedback").className="feedback hidden";$("riddleFeedback").textContent="";
+ $("riddleCheckBtn").classList.remove("hidden");$("riddleCheckBtn").disabled=false;$("riddleNextBtn").classList.add("hidden");
+ $("riddleAnswer").onkeydown=(e)=>{if(e.key==="Enter")checkRiddle()};
+}
+function normalizeAnswer(s){return s.toLowerCase().replace(/[\s.,!?·'’“”‘’]/g,"").replace(/첫번째/g,"첫번째");}
+function checkRiddle(){
+ if(riddleAnswered)return;
+ const input=$("riddleAnswer").value.trim(); if(!input){$("riddleAnswer").focus();return;}
+ const r=riddles[activeRiddle], f=$("riddleFeedback");
+ const val=normalizeAnswer(input);
+ const correct=r.answers.some(a=>val===normalizeAnswer(a));
+ if(correct){riddleAnswered=true;$("riddleAnswer").disabled=true;f.className="feedback good";f.textContent="정답입니다! 다음 단계로 이동하세요.";$("riddleCheckBtn").classList.add("hidden");$("riddleNextBtn").classList.remove("hidden");}
+ else{const attempts=Number($("riddleCheckBtn").dataset.attempts||0)+1;$("riddleCheckBtn").dataset.attempts=attempts;f.className="feedback bad";f.textContent="정답이 아닙니다. 다시 생각해 보세요.";}
+}
+
+function openRiddleMission(){
+ if(!riddleAnswered)return;
+ if(activeRiddleStage+1<riddleGroups[activeRiddleGroup].length){showRiddle(activeRiddleGroup,activeRiddleStage+1);return;}
+ showMission(activeRiddleGroup);
+}
+
+function showMission(n){
+ const m=missions[n];show("mission");$("missionTitle").textContent=m.title;$("missionPill").textContent=`조별 미션 ${n+1} / 5`;$("missionName").textContent=m.name;$("missionSummary").textContent=m.summary;
+ $("missionChecks").innerHTML="";
+ m.checks.forEach((t,i)=>{const label=document.createElement("label");label.className="checkline";const cb=document.createElement("input");cb.type="checkbox";cb.onchange=()=>{$("missionDoneBtn").disabled=!Array.from($("missionChecks").querySelectorAll("input")).every(x=>x.checked)};const span=document.createElement("span");span.textContent=t;label.append(cb,span);$("missionChecks").appendChild(label)});
+ $("missionFeedback").className="feedback hidden";$("missionCodeArea").classList.add("hidden");$("missionCode").value="";$("missionDoneBtn").textContent="미션 수행 확인";$("missionDoneBtn").onclick=completeMission;$("missionDoneBtn").disabled=true;
+}
+function completeMission(){
+ const feedback=$("missionFeedback");
+ const checks=Array.from($("missionChecks").querySelectorAll("input"));
+ if(!checks.length || !checks.every(x=>x.checked)){
+   feedback.className="feedback bad"; feedback.textContent="모든 행동 미션 항목을 완료해야 합니다."; return;
+ }
+ const area=$("missionCodeArea");
+ if(area.classList.contains("hidden")){
+   area.classList.remove("hidden");
+   feedback.className="feedback"; feedback.textContent="담당 선생님에게 수행을 확인받고 승인 코드를 입력하세요.";
+   $("missionDoneBtn").textContent="승인 코드 확인"; $("missionCode").focus(); return;
+ }
+ if($("missionCode").value.trim()!=="1004"){
+   feedback.className="feedback bad"; feedback.textContent="승인 코드가 올바르지 않습니다. 담당 선생님에게 확인하세요."; return;
+ }
+ const n=Math.floor(index/6)-1;
+ completedMissions.add(n);
+ feedback.className="feedback good"; feedback.textContent="승인 완료! 다음 구역으로 이동합니다.";
+ $("missionDoneBtn").disabled=true;
+ $("missionDoneBtn").textContent="다음 구역으로 이동";
+ $("missionDoneBtn").onclick=()=>{if(index>=questions.length){show("finale")}else{renderQuestion();show("quiz")}};
+ $("missionDoneBtn").disabled=false;
+}
+function updateProgress(){
+ $("progressText").textContent=`${Math.min(index+(answered?1:0),30)} / 30 문제`;
+ $("progressBar").style.width=`${Math.min(index+(answered?1:0),30)/30*100}%`;
+}
+function previewPhoto(event){
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ if(!file.type.startsWith("image/"))return;
+ const reader=new FileReader();reader.onload=()=>{$("photoPreview").src=reader.result;$("photoPreview").classList.remove("hidden")};reader.readAsDataURL(file);
+}
+function finishGame(){$("finishMsg").classList.remove("hidden");$("finishMsg").scrollIntoView({behavior:"smooth",block:"center"})}
+</script>
+</body>
+</html>
